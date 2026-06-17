@@ -25,7 +25,6 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/icons";
 import type { UpsellProductConfig } from "@/components/thank-you/UpsellOfferBanner";
 import type { OrderContext } from "@/hooks/useThankYouPayment";
@@ -40,9 +39,6 @@ export interface UpsellCheckoutModalProps {
 }
 
 type UpsellStatus = "idle" | "processing" | "queued" | "failed";
-
-const ctaClassName =
-    "order-cta gloss-cta h-12 w-full rounded-md text-base font-bold tracking-[0.04em] text-white uppercase cursor-pointer";
 
 export function UpsellCheckoutModal({
     upsell,
@@ -149,7 +145,7 @@ export function UpsellCheckoutModal({
         >
             <DialogContent
                 data-slot="upsell-modal"
-                className="sm:max-w-md"
+                className="sm:max-w-md bg-paper border-line"
             >
                 <DialogHeader>
                     <DialogTitle className="text-lg font-bold">
@@ -165,12 +161,12 @@ export function UpsellCheckoutModal({
                 {/* Product summary */}
                 <div
                     data-slot="upsell-product-summary"
-                    className="flex items-center gap-3 rounded-md border border-line bg-bone2/40 p-3"
+                    className="flex items-center gap-3 rounded-xl border border-line bg-paper2 p-3"
                 >
                     <img
                         src={upsell.image.src}
                         alt={upsell.image.alt}
-                        className="h-14 w-14 shrink-0 rounded-md border border-line object-cover"
+                        className="h-14 w-14 shrink-0 rounded-xl border border-line object-cover"
                     />
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold text-ink">
@@ -183,7 +179,7 @@ export function UpsellCheckoutModal({
                             <span className="num text-sm text-ink3 line-through">
                                 {upsell.regularPrice}
                             </span>
-                            <span className="rounded-full bg-amber px-2 py-0.5 text-xs font-bold text-white">
+                            <span className="save-chip">
                                 {upsell.discountLabel}
                             </span>
                         </div>
@@ -212,46 +208,42 @@ export function UpsellCheckoutModal({
                 {/* Actions */}
                 <div className="flex flex-col gap-3">
                     {isQueued ? (
-                        <Button
+                        <button
                             type="button"
-                            size="lg"
                             data-slot="upsell-checkout-cta"
-                            className={ctaClassName}
+                            className="cta w-full py-3"
                             onClick={onClose}
                         >
                             Done
-                        </Button>
+                        </button>
                     ) : (
-                        <Button
+                        <button
                             type="button"
-                            size="lg"
                             data-slot="upsell-checkout-cta"
-                            className={ctaClassName}
+                            className="cta w-full py-3"
                             disabled={!canSubmit}
                             onClick={handlePay}
                         >
                             {isProcessing ? "Saving…" : "Add to my order"}
-                        </Button>
+                        </button>
                     )}
 
                     {!isQueued && (
-                        <div className="flex items-center justify-center gap-1.5 text-xs text-ink3">
+                        <div className="flex items-center justify-center gap-1.5 text-[11px] text-ink3">
                             <Icon.Lock className="h-3 w-3" aria-hidden="true" />
                             Secure checkout
                         </div>
                     )}
 
                     {!isQueued && (
-                        <Button
+                        <button
                             type="button"
-                            variant="link"
-                            size="sm"
                             onClick={onClose}
                             disabled={isProcessing}
-                            className="h-auto px-0 text-xs text-ink3"
+                            className="text-[12px] text-ink3 underline underline-offset-2 hover:text-ink transition-colors mx-auto"
                         >
                             No thanks, I'll skip this offer
-                        </Button>
+                        </button>
                     )}
                 </div>
             </DialogContent>
