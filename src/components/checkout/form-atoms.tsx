@@ -1,25 +1,28 @@
 /**
  * form-atoms
  * -----------------------------------------------------------------------------
- * Shared building blocks for the checkout form: the uppercase-labelled `Field`
- * wrapper, the numbered `SectionHead`, and the `inputCls` string used by every
- * text input / select so they share the flat gloss-input treatment.
+ * Shared building blocks for the AG1 checkout form: the smallcaps-labelled
+ * `Field` wrapper (with optional leading icon), the numbered `Step` accordion,
+ * and the `inputCls` string applied to every text input / select.
  * -----------------------------------------------------------------------------
  */
 
 import * as React from "react";
 
-export const inputCls =
-  "w-full gloss-input rounded-md px-3 py-2.5 text-[14px] text-ink placeholder:text-ink3/70";
+import { Icon } from "@/components/icons";
+
+export const inputCls = "ck-input";
 
 export interface FieldProps {
   label: string;
-  children: React.ReactNode;
+  children: React.ReactElement<{ style?: React.CSSProperties }>;
   /** Tailwind grid-span class. Defaults to full width within a 2-col grid. */
   span?: string;
   optional?: boolean;
   hint?: string;
-  /** Stable field marker (data-field) preserved from the original components. */
+  /** Leading icon rendered inside the input well. */
+  icon?: React.ReactNode;
+  /** Stable field marker (data-field). */
   dataField?: string;
 }
 
@@ -29,38 +32,56 @@ export function Field({
   span = "col-span-2",
   optional = false,
   hint,
+  icon,
   dataField,
 }: FieldProps) {
   return (
     <label className={"block " + span} data-field={dataField}>
-      <div className="flex items-baseline justify-between mb-1">
-        <span className="text-[11px] uppercase tracking-[0.14em] text-ink2 font-medium">
-          {label}
-        </span>
-        {optional && <span className="text-[10.5px] text-ink3">optional</span>}
-        {hint && <span className="text-[10.5px] text-ink3">{hint}</span>}
-      </div>
-      {children}
+      <span className="smallcaps text-ink3 flex items-baseline justify-between">
+        <span>{label}</span>
+        {optional && <span className="normal-case tracking-normal text-[10px] text-ink4">optional</span>}
+        {hint && !optional && <span className="normal-case tracking-normal text-[10px] text-ink4">{hint}</span>}
+      </span>
+      <span className="block mt-1.5 relative">
+        {icon && (
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink3 pointer-events-none">
+            {icon}
+          </span>
+        )}
+        {icon
+          ? React.cloneElement(children, { style: { ...children.props.style, paddingLeft: 38 } })
+          : children}
+      </span>
     </label>
   );
 }
 
-export interface SectionHeadProps {
+export interface StepProps {
   n: string;
   title: string;
-  sub: string;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+  summaryRight?: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export function SectionHead({ n, title, sub }: SectionHeadProps) {
+export function Step({ n, title, icon, defaultOpen = true, summaryRight, children }: StepProps) {
   return (
-    <div className="flex items-baseline justify-between mb-3">
-      <div className="flex items-baseline gap-2.5">
-        <span className="num text-[11px] w-5 h-5 inline-flex items-center justify-center rounded-full bg-forest text-bone">
-          {n}
-        </span>
-        <h3 className="font-semibold text-[15px] tracking-tight text-ink">{title}</h3>
-      </div>
-      <span className="text-[11.5px] text-ink3">{sub}</span>
-    </div>
+    <details className="step" open={defaultOpen}>
+      <summary className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="num text-[11px] w-6 h-6 inline-flex items-center justify-center rounded-full bg-ink text-paper">
+            {n}
+          </span>
+          <span className="text-[15.5px] font-semibold tracking-tight text-ink">{title}</span>
+          {icon}
+        </div>
+        <div className="flex items-center gap-3 text-ink3">
+          {summaryRight}
+          <Icon.Caret className="caret w-4 h-4" />
+        </div>
+      </summary>
+      <div className="pt-5">{children}</div>
+    </details>
   );
 }
