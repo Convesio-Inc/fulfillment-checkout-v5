@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "fulfillment-checkout-v2",
+	"name": "fulfillment-checkout-v4",
 	"main": "worker/index.ts",
 	"compatibility_date": "2026-04-22",
 	"assets": {
@@ -68,8 +68,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "fulfillment-checkout-v2",
-			"database_id": "6bbbf02d-4b24-4f09-80d2-f53866c8e2e6",
+			"database_name": "fulfillment-checkout-v4",
+			"database_id": "47a82991-c7b7-49e7-96d1-435fd22bb9a9",
 			"migrations_dir": "worker/db/migrations"
 		}
 	],
