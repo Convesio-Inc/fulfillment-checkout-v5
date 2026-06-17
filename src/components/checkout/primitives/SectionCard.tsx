@@ -33,14 +33,17 @@ export function SectionCard({
     <section
       data-section={section}
       data-slot="section-card"
-      className={cn("gloss-card rounded-md overflow-hidden", className)}
+      className={cn(
+        "bg-paper border border-line rounded-[20px] overflow-hidden shadow-[0_1px_0_rgba(10,11,13,0.02),0_20px_42px_-26px_rgba(10,11,13,0.18)]",
+        className,
+      )}
       {...rest}
     >
       {title ? (
         <header className="px-5 sm:px-6 pt-5 pb-4 border-b border-line2">
           <h2
             data-slot="section-title"
-            className={cn("serif text-[24px] leading-[1.1] tracking-tight text-ink", titleClassName)}
+            className={cn("text-[24px] font-semibold leading-[1.1] tracking-[-0.01em] text-ink", titleClassName)}
           >
             {title}
           </h2>
