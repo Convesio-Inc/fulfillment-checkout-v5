@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "fulfillment-checkout-v4",
+	"name": "fulfillment-checkout-v5",
 	"main": "worker/index.ts",
 	"compatibility_date": "2026-04-22",
 	"assets": {
@@ -67,11 +67,14 @@
 	 * Service Bindings (communicate between multiple Workers)
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
 	 */
+	// Run `wrangler d1 create fulfillment-checkout-v5` and paste the returned
+	// database_id below before the first `npm run deploy`. Local `npm run preview`
+	// works without it (uses a local SQLite simulation).
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "fulfillment-checkout-v4",
-			"database_id": "47a82991-c7b7-49e7-96d1-435fd22bb9a9",
+			"database_name": "fulfillment-checkout-v5",
+			"database_id": "REPLACE_AFTER_D1_CREATE",
 			"migrations_dir": "worker/db/migrations"
 		}
 	],
