@@ -12,7 +12,7 @@ import {
   type ShippingInfoValue,
 } from "@/components/checkout/ShippingInfo";
 import { BundleSelector } from "@/components/checkout/BundleSelector";
-import { BUNDLES, type Bundle } from "@/components/checkout/bundles";
+import { BUNDLES, bundlePricing, type Bundle } from "@/components/checkout/bundles";
 import { Step } from "@/components/checkout/form-atoms";
 import { Icon } from "@/components/icons";
 import { useCheckoutPayment } from "@/hooks/useCheckoutPayment";
@@ -37,7 +37,7 @@ const INITIAL_SHIPPING: ShippingInfoValue = {
 const TRUST = [
   { k: "TLS 1.3", v: "256-bit encrypted", icon: <Icon.Lock className="w-3.5 h-3.5" /> },
   { k: "PCI DSS · L1", v: "Card data certified", icon: <Icon.Shield className="w-3.5 h-3.5" /> },
-  { k: "4.86 · 12.4k", v: "Verified reviews", icon: <Icon.Star className="w-3.5 h-3.5" /> },
+  { k: "4.86 · 12.4k", v: "Verified reviews", icon: <Icon.Star className="w-3.5 h-3.5 text-cobalt" /> },
   { k: "Lab tested", v: "3rd-party, COA", icon: <Icon.Beaker className="w-3.5 h-3.5" /> },
 ];
 
@@ -48,6 +48,8 @@ export function CheckoutPage() {
   const [selectedBundle, setSelectedBundle] = useState<Bundle>(
     BUNDLES.find((b) => b.isMostChosen) ?? BUNDLES[0],
   );
+  const [subscribe, setSubscribe] = useState(true);
+  const pricing = bundlePricing(selectedBundle, subscribe);
 
   const componentRef = useRef<ConvesioPayComponent | null>(null);
   const handleComponentReady = useCallback((c: ConvesioPayComponent) => {
@@ -73,7 +75,7 @@ export function CheckoutPage() {
     await pay(componentRef.current, {
       email: customer.email,
       name: `${shipping.firstName} ${shipping.lastName}`.trim(),
-      amount: selectedBundle.totalAmountMinor,
+      amount: pricing.totalMinor,
       currency: CURRENCY,
       phone: { number: customer.phoneNumber, countryCode: "1" },
       billingAddress: address,
@@ -83,25 +85,25 @@ export function CheckoutPage() {
           sku: PRODUCT_SKU,
           description: PRODUCT_NAME,
           quantity: selectedBundle.bottleCount,
-          amountIncludingTax: selectedBundle.totalAmountMinor,
+          amountIncludingTax: pricing.totalMinor,
         },
       ],
     });
   };
 
   const isProcessing = status === "processing";
-  const totalFmt = `$${(selectedBundle.totalAmountMinor / 100).toFixed(2)}`;
+  const totalFmt = `$${(pricing.totalMinor / 100).toFixed(2)}`;
 
   return (
     <main data-page="checkout" className="min-h-screen">
       <div className="max-w-[720px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex flex-wrap items-baseline justify-between gap-y-2">
           <h1 className="text-[32px] font-semibold tracking-[-0.02em] leading-none text-ink">
-            Almost there.
+            Checkout.
           </h1>
           <span className="text-[12px] text-ink3">
-            Need a hand?{" "}
-            <a className="text-ink underline underline-offset-4 hover:text-ink2" href="#">
+            Need help?{" "}
+            <a className="text-cobalt hover:underline" href="#">
               care@meridian.co
             </a>
           </span>
@@ -121,16 +123,21 @@ export function CheckoutPage() {
               title="Your supply"
               summaryRight={
                 <span className="num text-[12px] text-ink whitespace-nowrap">
-                  <span className="text-ink3 smallcaps mr-2">{selectedBundle.bottleCount}× · one-time</span>
+                  <span className="text-ink3 smallcaps mr-2">{selectedBundle.bottleCount}× · {subscribe ? "monthly" : "one-time"}</span>
                   {totalFmt}
                 </span>
               }
             >
-              <BundleSelector value={selectedBundle} onChange={setSelectedBundle} />
+              <BundleSelector
+                value={selectedBundle}
+                onChange={setSelectedBundle}
+                subscribe={subscribe}
+                onSubscribeChange={setSubscribe}
+              />
               <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-ink3">
-                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> Free shipping</span>
-                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> 90-day return</span>
-                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3" /> Cancel anytime</span>
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3 text-mint" /> Free shipping</span>
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3 text-mint" /> 90-day return</span>
+                <span className="inline-flex items-center gap-1.5"><Icon.Check className="w-3 h-3 text-mint" /> Cancel anytime</span>
               </div>
             </Step>
           </div>
@@ -166,6 +173,7 @@ export function CheckoutPage() {
           <div className="px-6">
             <OrderSummaryCard
               selectedBundle={selectedBundle}
+              subscribe={subscribe}
               payDisabled={!isPaymentValid}
               payLoading={isProcessing}
             />
