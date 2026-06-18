@@ -204,7 +204,7 @@ export function ThankYouPage() {
                 aria-live="polite"
                 className="flex items-start gap-3 rounded-[14px] border border-line bg-paper2 px-5 py-4"
               >
-                <Spinner aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-rust" />
+                <Spinner aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-cobalt" />
                 <div data-slot="promo-copy" className="space-y-1">
                   <p className="text-[15px] font-semibold text-ink">Processing Payment</p>
                   <p className="text-[13px] text-ink2">
@@ -218,9 +218,9 @@ export function ThankYouPage() {
                 data-section="promo-banner"
                 data-status="succeeded"
                 aria-label="Order confirmation message"
-                className="flex items-start gap-3 rounded-[14px] border border-line2 bg-lime3/40 px-5 py-4"
+                className="flex items-start gap-3 rounded-[14px] border border-line2 bg-[#eaf0ff] px-5 py-4"
               >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-mint text-paper">
                   <Icon.Check className="h-3 w-3" />
                 </span>
                 <div data-slot="promo-copy" className="space-y-1">
@@ -459,7 +459,7 @@ export function ThankYouPage() {
 
                     <div
                       data-slot="guarantee-note"
-                      className="rounded-[12px] border border-line2 bg-lime3/40 p-3 text-[12.5px] font-semibold text-ink2"
+                      className="rounded-[12px] border border-line2 bg-[#eaf0ff] p-3 text-[12.5px] font-semibold text-ink2"
                     >
                       {thankYou.receipt.guaranteeNote}
                     </div>
