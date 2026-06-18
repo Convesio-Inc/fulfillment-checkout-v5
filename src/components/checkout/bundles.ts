@@ -44,3 +44,30 @@ export const BUNDLES: Bundle[] = [
     originalAmountMinor: 4900,
   },
 ];
+
+/** Visual-only subscription discount. Applied to the displayed + charged total;
+ *  no real recurring schedule is created. */
+export const SUBSCRIPTION_DISCOUNT = 0.2;
+
+export interface BundlePricing {
+  /** Charged + displayed total in minor units (sub-discounted when subscribe). */
+  totalMinor: number;
+  /** Per-bottle price in dollars, derived from totalMinor. */
+  pricePerBottle: number;
+  /** Compare-at total in minor units (49/bottle list). */
+  listMinor: number;
+  /** listMinor - totalMinor, floored at 0. */
+  savingsMinor: number;
+}
+
+export function bundlePricing(bundle: Bundle, subscribe: boolean): BundlePricing {
+  const factor = subscribe ? 1 - SUBSCRIPTION_DISCOUNT : 1;
+  const totalMinor = Math.round(bundle.totalAmountMinor * factor);
+  const listMinor = bundle.originalAmountMinor;
+  return {
+    totalMinor,
+    pricePerBottle: totalMinor / 100 / bundle.bottleCount,
+    listMinor,
+    savingsMinor: Math.max(0, listMinor - totalMinor),
+  };
+}
