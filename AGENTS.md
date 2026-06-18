@@ -26,7 +26,7 @@ React 19 + TypeScript SPA (Vite) deployed as a **Cloudflare Worker** (`@cloudfla
 
 - **Routing**: React Router 7 in `src/App.tsx`, wrapped in `AuthProvider` and `QueryClientProvider` (TanStack Query). Storefront routes live under `ShopLayout`; dashboard routes live under `DashboardLayout` and are gated by `ProtectedRoute`.
 - **Data layer**: TanStack Query for dashboard data fetching/caching. Storefront state is local-only.
-- **Persistence**: Cloudflare D1 (`DB` binding, db name `fulfillment-checkout-v4`). Queries go through Drizzle ORM (`worker/db/`).
+- **Persistence**: Cloudflare D1 (`DB` binding, db name `fulfillment-checkout-v5`). Queries go through Drizzle ORM (`worker/db/`).
 - **Scheduled work**: A `0 */2 * * *` cron triggers `handleSyncPayments`, which reconciles pending payments, charges deferred upsells, syncs orders to CartRover, and emails customers.
 
 ### Frontend routes
@@ -85,7 +85,7 @@ Sessions are **opaque hex tokens** (not JWTs) stored in the `user_sessions` D1 t
 
 | File                                                                                                                                                                   | Role                                                                                                                                                                                                                                                                                                      |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/index.css`                                                                                                                                                        | `/* === BRAND THEME === */` block — three `--brand*` tokens drive button color, hover, and text.                                                                                                                                                                                                          |
+| `src/index.css`                                                                                                                                                        | clinical cobalt/ink/mint palette (see `/* === CLINICAL PALETTE === */` block in `src/index.css`) — `--brand*` tokens drive button color, hover, and text.                                                                                                                                                 |
 | `src/App.tsx`                                                                                                                                                          | Wraps the app in `AuthProvider` + `QueryClientProvider`, mounts `ShopLayout` (storefront) and `DashboardLayout` (admin) with `ProtectedRoute` on dashboard routes.                                                                                                                                        |
 | `src/layouts/ShopLayout.tsx` / `src/layouts/DashboardLayout.tsx`                                                                                                       | Two top-level layouts — storefront vs admin.                                                                                                                                                                                                                                                              |
 | `src/pages/CheckoutPage.tsx`                                                                                                                                           | Owns all checkout form state; wires `useConvesioPayCheckout` + `useCheckoutPayment`; drives `PaymentStatusDialog`.                                                                                                                                                                                        |
@@ -162,7 +162,7 @@ Plain var: `CPAY_ENVIRONMENT` — `"test"` (default) or `"live"`. Selects the up
 
 ### D1 database
 
-Binding `DB`, database name `fulfillment-checkout-v4` (id pinned in `wrangler.jsonc`). All queries go through Drizzle (`db(env)` in `worker/db/client.ts`). Schema in `worker/db/schema.ts`:
+Binding `DB`, database name `fulfillment-checkout-v5` (id pinned in `wrangler.jsonc`). All queries go through Drizzle (`db(env)` in `worker/db/client.ts`). Schema in `worker/db/schema.ts`:
 
 | Table           | Notes                                                                                                                                                                                                                             |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -186,12 +186,12 @@ Three layers in increasing depth — only go deeper than you need:
    - State list in shipping form → `US_STATES` constant in `src/components/checkout/ShippingInfo.tsx`
    - Order summary product, prices, CTA → `src/components/checkout/OrderSummaryCard.tsx`
    - Thank-you page copy, upsell offer → `src/pages/ThankYouPage.tsx` (`UPSELL_PRODUCT = null` disables the banner)
-2. **Brand colors** → `/* === BRAND THEME === */` block in `src/index.css`.
+2. **Brand colors** → clinical cobalt/ink/mint palette (see `/* === CLINICAL PALETTE === */` block in `src/index.css`).
 3. **Layout or behavior** → section components under `src/components/<family>/`; compose or reorder them in the matching page under `src/pages/`.
 
 Section component families:
 
-- `src/components/checkout/` — `BundleSelector`, `CustomerInfo`, `ShippingInfo`, `PaymentInfo`, `OrderSummaryCard`, `PaymentStatusDialog`, `form-atoms`, plus `primitives/` (`SectionCard`, `PriceRow`).
+- `src/components/checkout/` — `BundleSelector`, `CustomerInfo`, `ShippingInfo`, `PaymentInfo`, `OrderSummaryCard`, `PaymentStatusDialog`, `form-atoms`, plus `primitives/` (`SectionCard`, `PriceRow`). Note: the subscription toggle in `BundleSelector` is visual-only — the −20% discount is applied to the charge amount but no real recurring schedule is created.
 - `src/components/thank-you/` — `ThankYouHeader`, `OrderConfirmationCard`, `NextStepsCard`, `UpsellOfferBanner`, `UpsellCheckoutModal`.
 - `src/components/orders/` — admin orders table, row, drawer, pagination, status pill.
 - `src/components/users/` — admin user table, row, add dialog, role select, role pill.

@@ -1,4 +1,4 @@
-# Convesio Fulfillment Checkout V4
+# Convesio Fulfillment Checkout V5
 
 A production-ready **single-page application** that renders an **integrated ConvesioPay checkout**, ready to deploy on [Convesio Static Sites](https://convesio.com).
 It features native integrations with FullStack CartRover API + SendGrid API, so every 2 hours orders are synced with CartRover, and the customers are emailed through SendGrid.
@@ -9,7 +9,7 @@ Built with **React 19**, **TypeScript**, **Vite**, **Tailwind CSS v4** and **sha
 
 ## Table of Contents
 
-- [Convesio Fulfillment Checkout V4](#convesio-fulfillment-checkout-v4)
+- [Convesio Fulfillment Checkout V5](#convesio-fulfillment-checkout-v5)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [How it Works](#how-it-works)
@@ -120,8 +120,8 @@ Before you start, make sure you have:
 Fork or clone this repository into your own GitHub account:
 
 ```bash
-git clone https://github.com/Convesio-Inc/fulfillment-checkout-v4.git
-cd fulfillment-checkout-v4
+git clone https://github.com/Convesio-Inc/fulfillment-checkout-v5.git
+cd fulfillment-checkout-v5
 npm install
 ```
 
@@ -130,7 +130,7 @@ npm install
 The Worker persists orders and payments in a Cloudflare D1 database. Create one and apply the migrations:
 
 ```bash
-wrangler d1 create fulfillment-checkout-v4
+wrangler d1 create fulfillment-checkout-v5
 ```
 
 Copy the `database_id` printed by the command and update `wrangler.jsonc`:
@@ -139,7 +139,7 @@ Copy the `database_id` printed by the command and update `wrangler.jsonc`:
 "d1_databases": [
   {
     "binding": "DB",
-    "database_name": "fulfillment-checkout-v4",
+    "database_name": "fulfillment-checkout-v5",
     "database_id": "<your-database-id>"
   }
 ]
@@ -148,7 +148,7 @@ Copy the `database_id` printed by the command and update `wrangler.jsonc`:
 Then apply migrations:
 
 ```bash
-wrangler d1 migrations apply fulfillment-checkout-v4
+wrangler d1 migrations apply fulfillment-checkout-v5
 ```
 
 ### 3. Deploy to Convesio Static Sites
@@ -287,6 +287,8 @@ Replace placeholder images in `public/` and update the `src` paths in the releva
 
 ### 2. Brand colors — `src/index.css`
 
+This template ships with the **clinical palette**: Clinical white / cobalt (#1c4dff) / ink (#0a0b0d) / mint (#00a36b).
+
 All visual tokens live in the `/* === BRAND THEME === */` block near the top of `src/index.css`. The most common ones to change:
 
 ```css
@@ -350,7 +352,7 @@ npm install
 The dev server runs a local D1 instance automatically, but you need to apply migrations before the first run:
 
 ```bash
-wrangler d1 migrations apply fulfillment-checkout-v4 --local
+wrangler d1 migrations apply fulfillment-checkout-v5 --local
 ```
 
 ### 3. Configure local secrets
@@ -521,13 +523,23 @@ Live integrations require their own distinct credentials — sandbox keys won't 
 The redirect URI in your Google Cloud OAuth client must exactly match `https://<your-site-url>/auth/google/callback`. A trailing slash or wrong domain will cause this error.
 
 **Worker fails to start locally (`missing binding: DB`).**
-Run `wrangler d1 migrations apply fulfillment-checkout-v4 --local` to create and seed the local D1 database before starting the dev server.
+Run `wrangler d1 migrations apply fulfillment-checkout-v5 --local` to create and seed the local D1 database before starting the dev server.
 
 **Orders aren't syncing to CartRover.**
 Check that `CARTROVER_API_USER` and `CARTROVER_API_KEY` are set correctly. The sync runs on a 2-hour cron — you can trigger it manually via `wrangler dev` and the scheduled event.
 
 **I edited a component but the page didn't update.**
 Stop and restart the dev server. Vite usually hot-reloads, but some changes can occasionally require a clean restart.
+
+---
+
+## Deploy checklist (v5 — not yet deployed)
+
+1. `wrangler d1 create fulfillment-checkout-v5` → copy the returned `database_id`.
+2. Paste it into `wrangler.jsonc` → `d1_databases[0].database_id`.
+3. `npm run db:migrate:remote` to apply migrations to the new D1.
+4. Push secrets (`npm run add-envs` + the auth/email/cartrover secrets listed in Worker secrets).
+5. `npm run deploy`.
 
 ---
 
