@@ -33,7 +33,6 @@
 	],
 	"secrets": {
 		"required": [
-			"CPAY_CLIENT_KEY",
 			"CPAY_API_KEY",
 			"CPAY_SECRET",
 			"CPAY_INTEGRATION",

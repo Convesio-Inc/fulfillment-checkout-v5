@@ -1552,7 +1552,7 @@ git commit -m "feat: restyle ThankYouPage + SectionCard to AG1 palette"
 ```bash
 grep -oE "^[A-Z_]+=" .dev.vars | tr -d '=' | sort | tr '\n' ' '
 ```
-Expected: includes `CPAY_CLIENT_KEY CPAY_API_KEY CPAY_SECRET CPAY_INTEGRATION` (and ideally `AUTH_SALT`, `SENDGRID_API_KEY`, `CARTROVER_*`). If `CPAY_*` are missing, stop — the payment iframe won't load.
+Expected: includes `CPAY_API_KEY CPAY_SECRET CPAY_INTEGRATION` (and ideally `AUTH_SALT`, `SENDGRID_API_KEY`, `CARTROVER_*`). If `CPAY_*` are missing, stop — the payment iframe won't load.
 
 - [ ] **Step 2: Build and start the full preview (worker + local D1)**
 
@@ -1617,7 +1617,6 @@ Replace the bootstrap `secrets` block with:
 ```jsonc
 	"secrets": {
 		"required": [
-			"CPAY_CLIENT_KEY",
 			"CPAY_API_KEY",
 			"CPAY_SECRET",
 			"CPAY_INTEGRATION",

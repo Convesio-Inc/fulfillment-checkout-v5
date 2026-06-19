@@ -70,7 +70,7 @@ The dashboard/login (admin) side is **out of scope** and must remain visually un
   (full worker + D1 + `/config`).
 - **Remote DB:** `npm run db:migrate:remote` to create the schema in the new remote D1.
 - **Deploy:** `wrangler deploy` (bootstrap with empty `secrets.required`), then push secret values
-  read from `.dev.vars` (`CPAY_CLIENT_KEY`, `CPAY_API_KEY`, `CPAY_SECRET`, `CPAY_INTEGRATION`,
+  read from `.dev.vars` (`CPAY_API_KEY`, `CPAY_SECRET`, `CPAY_INTEGRATION`,
   `AUTH_SALT`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `SENDGRID_API_KEY`,
   `CARTROVER_API_USER`, `CARTROVER_API_KEY`) via `wrangler secret put` / `secret bulk`, restore the
   `secrets.required` list in `wrangler.jsonc`, and redeploy. Confirm the live URL renders.
