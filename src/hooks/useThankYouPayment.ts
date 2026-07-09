@@ -148,7 +148,7 @@ function orderContextFromVerifyBody(
 // Intentionally duplicated in useCheckoutPayment.ts and
 // worker/handlers/payments/shared.ts — the SPA and worker bundle separately
 // so they cannot share a module. Keep all three in sync when adding statuses.
-const SUCCESS_STATUSES = new Set(["Succeeded", "Authorized"]);
+const SUCCESS_STATUSES = new Set(["Succeeded", "Authorized", "Authorised"]);
 const PENDING_STATUSES = new Set(["Pending"]);
 
 const POLL_INTERVAL_MS = 5000;
